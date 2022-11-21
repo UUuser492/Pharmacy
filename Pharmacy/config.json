@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=DESKTOP-90E5JI4;Database=Pharmacy;Integrated Security=true;TrustServerCertificate=True"
+  }
+}
