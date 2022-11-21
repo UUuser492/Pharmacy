@@ -13,7 +13,6 @@ namespace Pharmacy.Models
         public Pharmacist Pharmacist { get; set; }
         public int? DrugId { get; set;  }
         public Drug Drug { get; set; }
-        //public List<Drug> Drugs { get; set; }
         public int Amount { get; set; }
         public DateTime Created { get; set; }
     }

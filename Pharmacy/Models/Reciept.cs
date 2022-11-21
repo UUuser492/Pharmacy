@@ -16,6 +16,5 @@ namespace Pharmacy.Models
         public int? OrderId { get; set; }
         public int Amount { get; set; }
         public DateTime? Created { get; set; }
-        //public List<Drug> Drugs { get; set;}
     }
 }

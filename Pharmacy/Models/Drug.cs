@@ -16,7 +16,6 @@ namespace Pharmacy.Models
         public Manufacturer Manufacturer { get; set; }
         public List<DrugType> DrugTypes { get; set; }
         public List<Order> Orders { get; set; }
-        public List<Reciept> Reciepts { get; set; }
-        //public int? RecieptId { get; set; } 
+        public List<Reciept> Reciepts { get; set; } 
     }
 }
