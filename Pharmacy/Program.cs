@@ -224,11 +224,28 @@ using (var ctx = new PharmacyContext(options))
     //foreach (var c in custs)
     //    Console.WriteLine($"{c.fName} ({c.Age})");
 
-    ////stored t-function
+    ////stored t-function to find
     //SqlParameter param = new SqlParameter("@price", 75m);
     //var users = ctx.Drugs.FromSqlRaw("SELECT * FROM DrugsPrice (@price)", param).ToList();
     //foreach (var u in users)
     //    Console.WriteLine($"{u.Name} - {u.Price}");
+
+    ////stored t-function to find bigger
+    //SqlParameter param = new SqlParameter("@price", 20m);
+    //var users = ctx.Drugs.FromSqlRaw("SELECT * FROM DrugsPriceMore (@price)", param).ToList();
+    //foreach (var u in users)
+    //    Console.WriteLine($"{u.Name} - {u.Price}");
+
+    ////stored t-function to find smaller
+    //SqlParameter param = new SqlParameter("@price", 75m);
+    //var users = ctx.Drugs.FromSqlRaw("SELECT * FROM DrugsPriceLess (@price)", param).ToList();
+    //foreach (var u in users)
+    //    Console.WriteLine($"{u.Name} - {u.Price}");
+
+    //usage from context 
+    //var drugs = ctx.DrugsPriceLess(30);
+    //foreach (var d in drugs)
+    //    Console.WriteLine($"{d.Name} - {d.Price}");
 
     //StoredProcedure
     //SqlParameter param = new()

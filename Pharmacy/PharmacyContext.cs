@@ -20,6 +20,8 @@ namespace Pharmacy
         public DbSet<Pharmacy_m> Pharmacy { get; set; }
         public DbSet<DrugType> DrugType { get; set; }
 
+        public IQueryable<Drug> DrugsPriceLess(decimal price) => FromExpression(() => DrugsPriceLess(price));
+
         public PharmacyContext()
         {
 
@@ -51,6 +53,7 @@ namespace Pharmacy
 
             modelBuilder.Entity<Customer>().ToTable(t=>t.HasCheckConstraint("Age", "Age > 0 AND Age < 80"));
             modelBuilder.Entity<Pharmacist>().ToTable(t => t.HasCheckConstraint("Age", "Age > 0 AND Age < 80"));
+            modelBuilder.HasDbFunction(() => DrugsPriceLess(default));
 
             //modelBuilder.Entity<Customer>().HasCheckConstraint("Age", "Age > 0 AND Age < 80");/////////////
             //modelBuilder.Entity<Pharmacist>().HasCheckConstraint("Age", "Age > 0 AND Age < 80");///////////
