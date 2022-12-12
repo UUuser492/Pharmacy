@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy;
 
@@ -11,9 +12,11 @@ using Pharmacy;
 namespace Pharmacy.Migrations
 {
     [DbContext(typeof(PharmacyContext))]
-    partial class PharmacyContextModelSnapshot : ModelSnapshot
+    [Migration("20221211221723_virt")]
+    partial class virt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,19 +198,22 @@ namespace Pharmacy.Migrations
                         {
                             Id = 1,
                             Amount = 1,
-                            DrugId = 1
+                            DrugId = 1,
+                            PharmacymId = 1
                         },
                         new
                         {
                             Id = 2,
                             Amount = 1,
-                            DrugId = 2
+                            DrugId = 2,
+                            PharmacymId = 2
                         },
                         new
                         {
                             Id = 3,
                             Amount = 4,
-                            DrugId = 3
+                            DrugId = 3,
+                            PharmacymId = 3
                         });
                 });
 

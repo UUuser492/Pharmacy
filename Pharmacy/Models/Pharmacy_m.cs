@@ -10,6 +10,7 @@ namespace Pharmacy.Models
     {
         public int Id { get; set; }
         public string? Address { get; set; }
-        public List<DrugType> DrugTypes { get; set; }
+        public virtual List<DrugType> DrugTypes { get; set; }
+        public virtual List<Pharmacist> Pharmacists { get; set; }
     }
 }

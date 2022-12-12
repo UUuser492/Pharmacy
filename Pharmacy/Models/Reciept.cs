@@ -10,9 +10,9 @@ namespace Pharmacy.Models
     {
         public int Id { get; set; }
         public int? CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
         public int? DrugId { get; set; }
-        public Drug Drug { get; set; }
+        public virtual Drug Drug { get; set; }
         public int? OrderId { get; set; }
         public int Amount { get; set; }
         public DateTime? Created { get; set; }

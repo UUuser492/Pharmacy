@@ -12,6 +12,8 @@ namespace Pharmacy.Models
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Password { get; set; }
-        public List<Order> Orders { get; set; }
+        public virtual List<Order> Orders { get; set; }
+        public int? PharmacyId { get; set; }
+        public virtual Pharmacy_m Pharmacy { get; set; }
     }
 }

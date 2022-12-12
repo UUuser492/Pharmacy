@@ -11,6 +11,6 @@ namespace Pharmacy.Models
         public int Id { get; set; }
         public string? Email { get; set; }
         public string Phone { get; set; }
-        public List<Reciept> Reciepts { get; set; }
+        public virtual List<Reciept> Reciepts { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace Pharmacy.Models
         public string? Name { get; set; }
         public string? Address { get; set; }
         public bool License { get; set; }
-        public List<Drug> Drugs { get; set; }
+        public virtual List<Drug> Drugs { get; set; }
     }
 }

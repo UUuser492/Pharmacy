@@ -13,9 +13,9 @@ namespace Pharmacy.Models
         public string? Type { get; set; }
         public decimal Price { get; set; }
         public int? ManufacturerId { get; set; }//no on delete cascade
-        public Manufacturer Manufacturer { get; set; }
-        public List<DrugType> DrugTypes { get; set; }
-        public List<Order> Orders { get; set; }
-        public List<Reciept> Reciepts { get; set; } 
+        public virtual Manufacturer Manufacturer { get; set; }
+        public virtual List<DrugType> DrugTypes { get; set; }
+        public virtual List<Order> Orders { get; set; }
+        public virtual List<Reciept> Reciepts { get; set; } 
     }
 }

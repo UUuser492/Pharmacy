@@ -179,9 +179,9 @@ namespace Pharmacy
 
             builder.HasData(new List<Pharmacist>
             {
-                new Pharmacist{ Id = 1, fName = "Olexander", lName = "Marchenko", Age = 20, Email = "W1@gmail.com", Gender = true, Password = "123451", Phone = "+380959873454" },
-                new Pharmacist{ Id = 2, fName = "Valerii", lName = "Grozny", Age = 23, Email = "W2@gmail.com", Gender = true, Password = "123452", Phone = "+380959873454" },
-                new Pharmacist{ Id = 3, fName = "Olexiy", lName = "Pavlenko", Age = 30, Email = "W3@gmail.com", Gender = true, Password = "123453", Phone = "+380959873454" },
+                new Pharmacist{ Id = 1, fName = "Olexander", lName = "Marchenko", Age = 20, Email = "W1@gmail.com", Gender = true, Password = "123451", Phone = "+380959873454", PharmacyId = 3},
+                new Pharmacist{ Id = 2, fName = "Valerii", lName = "Grozny", Age = 23, Email = "W2@gmail.com", Gender = true, Password = "123452", Phone = "+380959873454", PharmacyId = 2 },
+                new Pharmacist{ Id = 3, fName = "Olexiy", lName = "Pavlenko", Age = 30, Email = "W3@gmail.com", Gender = true, Password = "123453", Phone = "+380959873454" , PharmacyId = 1},
             });
 
         }
@@ -216,9 +216,9 @@ namespace Pharmacy
 
             builder.HasData(new List<Reciept>
             {
-                new Reciept{ Id = 1, Amount = 3, Created = new DateTime(2022,11,10), CustomerId = 1},
-                new Reciept{ Id = 2, Amount = 1, Created = new DateTime(2022,11,14), CustomerId = 2},
-                new Reciept{ Id = 3, Amount = 1, Created = new DateTime(2022,11,12), CustomerId = 3},
+                new Reciept{ Id = 1, Amount = 3, Created = new DateTime(2022,11,10), CustomerId = 1, DrugId = 3},
+                new Reciept{ Id = 2, Amount = 1, Created = new DateTime(2022,11,14), CustomerId = 2, DrugId = 1},
+                new Reciept{ Id = 3, Amount = 1, Created = new DateTime(2022,11,12), CustomerId = 3, DrugId = 2},
             });
 
         }
