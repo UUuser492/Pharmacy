@@ -257,4 +257,17 @@ using (var ctx = new PharmacyContext(options))
     //};
     //ctx.Database.ExecuteSqlRaw("ForType @type OUT", param);
     //Console.WriteLine(param.Value);
+
+
+    //топ 3 виробники з найбільшим грошовим виторгом
+    var drugs = ctx.Drugs.Join(ctx.Reciept, m => m.Id, c => c.Id, 
+        (m, c) => new //res
+        {
+            Name = m.Name,
+            Amount = c.Amount,
+            Price = m.Price * c.Amount,
+            Manufacturer = m.Manufacturer.Name
+        }).OrderByDescending(p => p.Price).Take(3);
+    foreach (var m in drugs)
+        Console.WriteLine($"{m.Name} Amount:({m.Amount}) - Price:({m.Price}) - {m.Manufacturer}");
 };
