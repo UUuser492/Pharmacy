@@ -276,7 +276,7 @@ using (var ctx = new PharmacyContext(options))
     //    Console.WriteLine($"{m.Name} Amount:({m.Amount}) - Price:({m.Price}) - {m.Manufacturer}");
 
     ////////////////////////////////////////////////////////////////////////
-    
+
 };
 //////////////////////////////////////////////////
 
@@ -287,10 +287,10 @@ object locker = new();
 Semaphore sem = new Semaphore(1, 2);
 Mutex mutexObj = new();
 
-//ThreadsInsert(); - filling with threads
-//TasksInsert(); - filling with tasks
-//ThreadsRead(); - semaphore/mutex reading with threads
-//TasksPrint(); - async reading with tasks
+//ThreadsInsert();// - filling with threads
+TasksInsert();// - filling with tasks
+//ThreadsRead();// - semaphore/mutex reading with threads
+//TasksPrint();// - async reading with tasks
 
 void Insert()
 {
@@ -332,12 +332,31 @@ void Insert()
         //}
         //finally { if (acquiredLock) Monitor.Exit(locker); }
     }
-    
+
 };
+
+void Read()
+{
+
+    //mutexObj.WaitOne();
+    //sem.WaitOne();
+    using (var ctx1 = new PharmacyContext(options))
+    {
+        var drugs = (from d in ctx1.Drugs
+                     orderby d.Price
+                     select d).ToList();
+        foreach (var m in drugs)
+            Console.WriteLine($"{Thread.CurrentThread.Name} {m.Name} - Price:({m.Price})");
+
+    }
+    //mutexObj.ReleaseMutex();
+    //sem.Release();
+
+}
 
 void ThreadsInsert()
 {
-    for(int i = 1; i <= 4; i++)
+    for (int i = 1; i <= 4; i++)
     {
         Thread myThread1 = new Thread(Insert);
         myThread1.Name = $"{i}";
@@ -355,39 +374,9 @@ void ThreadsRead()
     }
 }
 
-void ThreadsReadAsync()
+void TasksPrint()
 {
     for (int i = 1; i <= 4; i++)
-    {
-        Thread myThread1 = new Thread(Read);
-        myThread1.Name = $"{i}";
-        myThread1.Start();
-    }
-}
-
-//Semaphore & Mutex reading___________________________________
-void Read()
-{
-
-    mutexObj.WaitOne();
-    //sem.WaitOne();
-    using (var ctx1 = new PharmacyContext(options))
-    {
-        var drugs = (from d in ctx1.Drugs
-                     orderby d.Price
-                     select d).ToList();
-        foreach (var m in drugs)
-            Console.WriteLine($"{Thread.CurrentThread.Name} {m.Name} - Price:({m.Price})");
-
-    }
-    mutexObj.ReleaseMutex();
-    //sem.Release();
-
-}
-
-void TasksRrint()
-{
-    for(int i = 1; i <= 4; i++)
     {
         Task task = Task.Run(async () => await Print());
         task.Wait();
@@ -419,7 +408,7 @@ async Task ReadAsync()
 
 async Task Print()
 {
-    Console.WriteLine("Начало метода PrintAsync");
+    Console.WriteLine("Begin PrintAsync");
     await Task.Run(() => ReadAsync());
-    Console.WriteLine("Конец метода PrintAsync");
+    Console.WriteLine("End PrintAsync");
 }
