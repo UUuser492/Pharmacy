@@ -280,295 +280,140 @@ using (var ctx = new PharmacyContext(options))
 };
 //////////////////////////////////////////////////
 
-//AutoResetEvent____________________________________________________
-//int counter = 1;
-//AutoResetEvent waitHandler = new AutoResetEvent(true);
+//Insert____________________________________________________
+int counter = 1;
+AutoResetEvent waitHandler = new AutoResetEvent(true);
+object locker = new();
+Semaphore sem = new Semaphore(1, 2);
+Mutex mutexObj = new();
 
-//void Insert()
-//{
-//    waitHandler.WaitOne();
+//ThreadsInsert(); - filling with threads
+//TasksInsert(); - filling with tasks
+//ThreadsRead(); - semaphore/mutex reading with threads
+//TasksPrint(); - async reading with tasks
 
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        for (int i = 0; i < 100; i++)
-//        {
-//            Drug drug = new Drug()
-//            {
-//                Name = "test" + $"{counter}",
-//                Price = counter,
-//                Type = "test" + $"{counter}",
-//                Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true }
-//            };
-//            Console.WriteLine($"{Thread.CurrentThread.Name}");
-//            ctx1.Drugs.Add(drug);
-//            ctx1.SaveChanges();
-//            counter++;
-//        }
-//    }
-//    waitHandler.Set();
-//};
+void Insert()
+{
+    using (var ctx1 = new PharmacyContext(options))
+    {
+        //bool acquiredLock = false;
+        //try
+        //{
+        //Monitor.Enter(locker, ref acquiredLock);
 
-//Thread myThread1 = new Thread(Insert);
-//myThread1.Name = "1";
-//Thread myThread2 = new Thread(Insert);
-//myThread2.Name = "2";
-//Thread myThread3 = new Thread(Insert);
-//myThread3.Name = "3";
-//Thread myThread4 = new Thread(Insert);
-//myThread4.Name = "4";
-//myThread1.Start();
-//myThread2.Start();
-//myThread3.Start();
-//myThread4.Start();
+        //waitHandler.WaitOne();
 
-////monitor_________________________________________________________
-//int counter = 1;
-//object locker = new();
+        //sem.WaitOne();
 
-//void Insert()
-//{
-//    bool acquiredLock = false;
-//    try
-//    {
-//        Monitor.Enter(locker, ref acquiredLock);
-//        using (var ctx1 = new PharmacyContext(options))
-//        {
-//            for (int i = 0; i < 100; i++)
-//            {
-//                Drug drug = new Drug()
-//                {
-//                    Name = "test" + $"{counter}",
-//                    Price = counter,
-//                    Type = "test" + $"{counter}",
-//                    Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true }
-//                };
-//                Console.WriteLine($"{Thread.CurrentThread.Name}");
-//                ctx1.Drugs.Add(drug);
-//                ctx1.SaveChanges();
-//                counter++;
-//            }
-//        }
-//    }
-//    finally { if (acquiredLock) Monitor.Exit(locker); }
+        //lock (locker)
+        //{
+        mutexObj.WaitOne();
+        for (int i = 0; i < 100; i++)
+        {
+            Drug drug = new Drug()
+            {
+                Name = "test" + $"{counter}",
+                Price = counter,
+                Type = "test" + $"{counter}",
+                Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true }
+            };
+            Console.WriteLine($"{Thread.CurrentThread.Name}");
+            ctx1.Drugs.Add(drug);
+            ctx1.SaveChanges();
+            counter++;
+        }
+        mutexObj.ReleaseMutex();
+        //}
 
-//};
+        //sem.Release();
 
-//Thread myThread1 = new Thread(Insert);
-//myThread1.Name = "1";
-//Thread myThread2 = new Thread(Insert);
-//myThread2.Name = "2";
-//Thread myThread3 = new Thread(Insert);
-//myThread3.Name = "3";
-//Thread myThread4 = new Thread(Insert);
-//myThread4.Name = "4";
-//myThread1.Start();
-//myThread2.Start();
-//myThread3.Start();
-//myThread4.Start();
+        //waitHandler.Set();
 
-////semaphore_________________________________________________________
-//int counter = 1;
-//Semaphore sem = new Semaphore(1,3);
+        //}
+        //finally { if (acquiredLock) Monitor.Exit(locker); }
+    }
+    
+};
 
-//ThreadStart act = () =>
-//{
-//    sem.WaitOne();
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        for (int i = 0; i < 100; i++)
-//        {
-//            Drug drug = new Drug()
-//            {
-//                Name = "test" + $"{counter}",
-//                Price = counter,
-//                Type = "test" + $"{counter}",
-//                Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true }
-//            };
-//            Console.WriteLine($"{Thread.CurrentThread.Name}");
-//            ctx1.Drugs.Add(drug);
-//            ctx1.SaveChanges();
-//            counter++;
-//        }
-//    }
-//    sem.Release();
-//};
+void ThreadsInsert()
+{
+    for(int i = 1; i <= 4; i++)
+    {
+        Thread myThread1 = new Thread(Insert);
+        myThread1.Name = $"{i}";
+        myThread1.Start();
+    }
+}
 
-//Thread myThread1 = new Thread(act);
-//myThread1.Name = "1";
-//Thread myThread2 = new Thread(act);
-//myThread2.Name = "2";
-//Thread myThread3 = new Thread(act);
-//myThread3.Name = "3";
-//Thread myThread4 = new Thread(act);
-//myThread4.Name = "4";
-//myThread1.Start();
-//myThread2.Start();
-//myThread3.Start();
-//myThread4.Start();
+void ThreadsRead()
+{
+    for (int i = 1; i <= 4; i++)
+    {
+        Thread myThread1 = new Thread(Read);
+        myThread1.Name = $"{i}";
+        myThread1.Start();
+    }
+}
 
-//lock_________________________________________________________
-//int counter = 1;
-//object locker = new();
-
-//ThreadStart act = () =>
-//{
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        lock(locker)
-//        {
-//            for (int i = 0; i < 100; i++)
-//            {
-//                Drug drug = new Drug()
-//                {
-//                    Name = "test" + $"{counter}",
-//                    Price = counter,
-//                    Type = "test" + $"{counter}",
-//                    Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true }
-//                };
-//                Console.WriteLine($"{Thread.CurrentThread.Name}");
-//                ctx1.Drugs.Add(drug);
-//                ctx1.SaveChanges();
-//                counter++;
-//            }
-//        }
-//    }
-//};
-
-//Thread myThread1 = new Thread(act);
-//myThread1.Name = "1";
-//Thread myThread2 = new Thread(act);
-//myThread2.Name = "2";
-//Thread myThread3 = new Thread(act);
-//myThread3.Name = "3";
-//Thread myThread4 = new Thread(act);
-//myThread4.Name = "4";
-//myThread1.Start();
-//myThread2.Start();
-//myThread3.Start();
-//myThread4.Start();
-
-////Mutex_______________________________________________________
-//int counter = 1;
-//Mutex mutexObj = new();
-
-//ThreadStart act = () =>
-//{
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        mutexObj.WaitOne();
-//        for (int i = 0; i < 100; i++)
-//        {
-//            Drug drug = new Drug() { Name = "test" + $"{counter}", Price = counter, Type = "test" + $"{counter}", 
-//                Manufacturer = new Manufacturer() { Name = "test" + $"{counter}", Address = "test" + $"{counter}", License = true } };
-//            //Console.WriteLine($"{Thread.CurrentThread.Name}");
-//            ctx1.Drugs.Add(drug);
-//            ctx1.SaveChanges();
-//            counter++;
-//        }
-//        mutexObj.ReleaseMutex();
-//    }
-//};
-
-//Thread myThread1 = new Thread(act);
-//myThread1.Name = "1";
-//Thread myThread2 = new Thread(act);
-//myThread2.Name = "2";
-//Thread myThread3 = new Thread(act);
-//myThread3.Name = "3";
-//Thread myThread4 = new Thread(act);
-//myThread4.Name = "4";
-//myThread1.Start();
-//myThread2.Start();
-//myThread3.Start();
-//myThread4.Start();
+void ThreadsReadAsync()
+{
+    for (int i = 1; i <= 4; i++)
+    {
+        Thread myThread1 = new Thread(Read);
+        myThread1.Name = $"{i}";
+        myThread1.Start();
+    }
+}
 
 //Semaphore & Mutex reading___________________________________
-//Semaphore sem = new Semaphore(4, 4);
-//Mutex mutexObj = new();
+void Read()
+{
 
-//for (int i = 1; i < 5; i++)
-//{
-//    Thread myThread = new Thread(Read);
-//    myThread.Name = $"#_____{i}_____";
-//    myThread.Start();
-//}
+    mutexObj.WaitOne();
+    //sem.WaitOne();
+    using (var ctx1 = new PharmacyContext(options))
+    {
+        var drugs = (from d in ctx1.Drugs
+                     orderby d.Price
+                     select d).ToList();
+        foreach (var m in drugs)
+            Console.WriteLine($"{Thread.CurrentThread.Name} {m.Name} - Price:({m.Price})");
 
-// void Read()
-//{
+    }
+    mutexObj.ReleaseMutex();
+    //sem.Release();
 
-//    //mutexObj.WaitOne();
-//    //sem.WaitOne();
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        var drugs = (from d in ctx1.Drugs
-//                               orderby d.Price
-//                               select d).ToList();
-//        foreach (var m in drugs)
-//        Console.WriteLine($"{Thread.CurrentThread.Name} {m.Name} - Price:({m.Price})");
+}
 
-//    }
-//    //mutexObj.ReleaseMutex();
-//    //sem.Release();
+void TasksRrint()
+{
+    for(int i = 1; i <= 4; i++)
+    {
+        Task task = Task.Run(async () => await Print());
+        task.Wait();
+    }
+}
 
-//}
-
-//async reading_________________________________________________________
-//Task task1 = Task.Run(async () => await Print());
-//task1.Wait();
-//Task task2 = Task.Run(async () => await Print());
-//task2.Wait();
-//Task task3 = Task.Run(async () => await Print());
-//task3.Wait();
-
-//async Task ReadAsync()
-//{
-//    using (var ctx1 = new PharmacyContext(options))
-//    {
-//        var drugs = await (from d in ctx1.Drugs
-//                           orderby d.Price
-//                           select d).ToListAsync();
-//        foreach (var m in drugs)
-//        {
-//            Console.WriteLine($"{m.Name} - Price:({m.Price})");
-//        }
-//    }
-//}
-
-//async Task Print()
-//{
-//    Console.WriteLine("Начало метода PrintAsync");
-//    await Task.Run(() => ReadAsync());
-//    Console.WriteLine("Конец метода PrintAsync");
-//}
-
-
-Task task1 = Task.Run(async () => await Print());
-//task1.Wait();
-Task task2 = Task.Run(async () => await Print());
-task2.Wait();
-Task task3 = Task.Run(async () => await Print());
-task3.Wait();
+void TasksInsert()
+{
+    for (int i = 1; i <= 4; i++)
+    {
+        Task task = Task.Run(() => Insert());
+        task.Wait();
+    }
+}
 
 async Task ReadAsync()
 {
     using (var ctx1 = new PharmacyContext(options))
     {
-        var drugs = await ctx1.Drugs.FirstOrDefaultAsync();
-        //foreach (var m in drugs)
-        //{
-        Console.WriteLine($"{drugs.Name} - Price:({drugs.Price})");
-        //}
-
-        //var drugs = await ctx1.Drugs.Join(ctx1.Reciept, m => m.Id, c => c.Id,
-        //    (m, c) => new //res
-        //    {
-        //        Name = m.Name,
-        //        Amount = c.Amount,
-        //        Price = m.Price * c.Amount,
-        //        Manufacturer = m.Manufacturer.Name
-        //    }).OrderByDescending(p => p.Price).FirstOrDefaultAsync();
-        //    Console.WriteLine($"{drugs.Name} Amount:({drugs.Amount}) - Price:({drugs.Price}) - {drugs.Manufacturer}");
-
+        var drugs = await (from d in ctx1.Drugs
+                           orderby d.Price
+                           select d).ToListAsync();
+        foreach (var m in drugs)
+        {
+            Console.WriteLine($"{m.Name} - Price:({m.Price})");
+        }
     }
 }
 
